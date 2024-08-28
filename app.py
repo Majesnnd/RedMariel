@@ -1,35 +1,48 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify, render_template
+from models import db, User, Post, Comment
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db.init_app(app)
 
-tasks = [
-    {"id": 1, "title": "Buy groceries", "done": False},
-    {"id": 2, "title": "Read a book", "done": True},
-    {"id": 3, "title": "Write code", "done": False}
-]
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route('/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({"tasks": tasks})
+@app.route('/users', methods=['GET', 'POST'])
+def users():
+    if request.method == 'POST':
+        data = request.get_json()
+        user = User(name=data['name'])
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'id': user.id, 'name': user.name}), 201
+    users = User.query.all()
+    return jsonify([{'id': user.id, 'name': user.name} for user in users])
 
-@app.route('/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    task = next((task for task in tasks if task["id"] == task_id), None)
-    if task is None:
-        return jsonify({"error": "Task not found"}), 404
-    return jsonify({"task": task})
+@app.route('/posts', methods=['GET', 'POST'])
+def posts():
+    if request.method == 'POST':
+        data = request.get_json()
+        post = Post(title=data['title'], content=data['content'])
+        db.session.add(post)
+        db.session.commit()
+        return jsonify({'id': post.id, 'title': post.title, 'content': post.content}), 201
+    posts = Post.query.all()
+    return jsonify([{'id': post.id, 'title': post.title, 'content': post.content} for post in posts])
 
-@app.route('/tasks', methods=['POST'])
-def create_task():
-    if not request.json or 'title' not in request.json:
-        return jsonify({"error": "Bad request"}), 400
-    new_task = {
-        "id": tasks[-1]["id"] + 1,
-        "title": request.json["title"],
-        "done": False
-    }
-    tasks.append(new_task)
-    return jsonify({"task": new_task}), 201
+@app.route('/comments', methods=['GET', 'POST'])
+def comments():
+    if request.method == 'POST':
+        data = request.get_json()
+        comment = Comment(text=data['text'], post_id=data['post_id'])
+        db.session.add(comment)
+        db.session.commit()
+        return jsonify({'id': comment.id, 'text': comment.text, 'post_id': comment.post_id}), 201
+    comments = Comment.query.all()
+    return jsonify([{'id': comment.id, 'text': comment.text, 'post_id': comment.post_id} for comment in comments])
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

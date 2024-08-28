@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Interface</title>
+</head>
+<body>
+    <h1>API Interface</h1>
+    <h2>Users</h2>
+    <button onclick="fetchData('users')">Fetch Users</button>
+    <pre id="user-data"></pre>
+
+    <h2>Posts</h2>
+    <button onclick="fetchData('posts')">Fetch Posts</button>
+    <pre id="post-data"></pre>
+
+    <h2>Comments</h2>
+    <button onclick="fetchData('comments')">Fetch Comments</button>
+    <pre id="comment-data"></pre>
+
+    <script>
+        function fetchData(endpoint) {
+            fetch(`/${endpoint}`)  // Construye la URL con el endpoint proporcionado
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById(`${endpoint}-data`).textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+        }
+    </script>
+</body>
+</html>
+
