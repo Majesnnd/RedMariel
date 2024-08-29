@@ -1,7 +1,7 @@
-name: CI 
+name: PipelineProducción
 
 on:
-  push:
+  pull_request:
     branches:
       - master 
 
