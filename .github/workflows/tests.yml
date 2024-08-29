@@ -28,5 +28,3 @@ jobs:
       run: |
         source mi_entorno/bin/activate
         pytest
-        pytest
- 

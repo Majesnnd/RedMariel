@@ -1,9 +1,12 @@
 name: PipelineProducción
 
 on:
-  pull_request:
+  push:
     branches:
       - master 
+  pull_request:
+    branches:
+      - master  
 
 jobs:
   test:
@@ -28,6 +31,4 @@ jobs:
       run: |
         source mi_entorno/bin/activate
         pytest
-        coverage run -m unittest discover
-        coverage report
-        coverage html
+
