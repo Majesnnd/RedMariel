@@ -35,10 +35,19 @@ def posts():
 def comments():
     if request.method == 'POST':
         data = request.get_json()
+        # Verifica que 'text' y 'post_id' estén presentes en los datos
+        if 'text' not in data or 'post_id' not in data:
+            return jsonify({'error': 'Missing fields'}), 400
+        
+        # Verifica que el post_id sea válido
+        if not Post.query.get(data['post_id']):
+            return jsonify({'error': 'Invalid post_id'}), 400
+
         comment = Comment(text=data['text'], post_id=data['post_id'])
         db.session.add(comment)
         db.session.commit()
         return jsonify({'id': comment.id, 'text': comment.text, 'post_id': comment.post_id}), 201
+
     comments = Comment.query.all()
     return jsonify([{'id': comment.id, 'text': comment.text, 'post_id': comment.post_id} for comment in comments])
 

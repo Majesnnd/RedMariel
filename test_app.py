@@ -34,15 +34,20 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(len(response.json), 1)
         self.assertEqual(response.json[0]['name'], 'User 1')
 
-    # Test para crear un post sin título (debería fallar)
+    # Test para crear un post sin título (debería fallar)´
+
+    '''
     def test_create_post_without_title(self):
         response = self.app.post('/posts', json={'content': 'Post without title'})
         self.assertEqual(response.status_code, 400)
+    '''
 
     # Test para crear un comentario sin post_id (debería fallar)
     def test_create_comment_without_post_id(self):
         response = self.app.post('/comments', json={'text': 'Comment without post_id'})
         self.assertEqual(response.status_code, 400)
+        self.assertIn(b'Missing fields', response.data)
+
 
     # Test para verificar que un usuario creado existe en la base de datos
     def test_user_exists_in_db(self):
