@@ -1,9 +1,12 @@
 name: PipelineProducción
 
 on:
-  pull_request:
+  push:
     branches:
       - master 
+  pull_request:
+    branches:
+      - master  
 
 jobs:
   test:
@@ -24,7 +27,7 @@ jobs:
         source mi_entorno/bin/activate
         pip install -r requirements.txt
 
-    - name: Run tests
+    - name: Run tests with coverage
       run: |
         source mi_entorno/bin/activate
-        pytest --cov=Proyectobase
+        pytest --cov=. --cov-fail-under=70
