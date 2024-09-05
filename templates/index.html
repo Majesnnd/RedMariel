@@ -22,7 +22,7 @@
                     <input type="text" id="username" placeholder="User Name" required>
                     <button type="submit" class="btn">Create User</button>
                 </form>
-                <ul id="users-data" class="data-display"></ul> <!-- Cambié a <ul> para mostrar en lista -->
+                <ul id="users-data" class="data-display"></ul>
             </section>
 
             <!-- Sección para manejar posts -->
@@ -34,7 +34,7 @@
                     <textarea id="post-content" placeholder="Post Content" required></textarea>
                     <button type="submit" class="btn">Create Post</button>
                 </form>
-                <ul id="posts-data" class="data-display"></ul> <!-- Cambié a <ul> para mostrar en lista -->
+                <ul id="posts-data" class="data-display"></ul>
             </section>
 
             <!-- Sección para manejar comentarios -->
@@ -46,13 +46,12 @@
                     <input type="number" id="comment-post-id" placeholder="Post ID" required>
                     <button type="submit" class="btn">Create Comment</button>
                 </form>
-                <ul id="comments-data" class="data-display"></ul> <!-- Cambié a <ul> para mostrar en lista -->
+                <ul id="comments-data" class="data-display"></ul>
             </section>
         </main>
     </div>
 
     <script>
-        // Función para obtener datos con solicitudes GET
         function fetchData(endpoint) {
             fetch(`/${endpoint}`)
                 .then(response => {
@@ -62,41 +61,38 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data);
-                    displayData(endpoint, data); // Mostrar datos de manera más estética
+                    displayData(endpoint, data);
                 })
                 .catch(error => {
                     console.error('There has been a problem with your fetch operation:', error);
                 });
         }
 
-        // Función para mostrar los datos de manera más estética
         function displayData(endpoint, data) {
             const dataList = document.getElementById(`${endpoint}-data`);
-            dataList.innerHTML = ''; // Limpia el contenido actual
+            dataList.innerHTML = '';
 
             if (endpoint === 'users') {
                 data.forEach(user => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `ID: ${user.id}, Name: ${user.name}`;
+                    listItem.innerHTML = `ID: ${user.id}, Name: ${user.name} <button onclick="deleteData('users', ${user.id})">Delete</button>`;
                     dataList.appendChild(listItem);
                 });
             } else if (endpoint === 'posts') {
                 data.forEach(post => {
                     const listItem = document.createElement('li');
-                    listItem.innerHTML = `<strong>${post.title}</strong>: ${post.content}`;
+                    listItem.innerHTML = `<strong>${post.title}</strong>: ${post.content} <button onclick="deleteData('posts', ${post.id})">Delete</button>`;
                     dataList.appendChild(listItem);
                 });
             } else if (endpoint === 'comments') {
                 data.forEach(comment => {
                     const listItem = document.createElement('li');
-                    listItem.innerHTML = `Comment: "${comment.text}" on Post ID: ${comment.post_id}`;
+                    listItem.innerHTML = `Comment: "${comment.text}" on Post ID: ${comment.post_id} <button onclick="deleteData('comments', ${comment.id})">Delete</button>`;
                     dataList.appendChild(listItem);
                 });
             }
         }
 
-        // Función para crear datos con solicitudes POST
         function postData(endpoint) {
             let data = {};
             if (endpoint === 'users') {
@@ -128,11 +124,28 @@
             })
             .then(data => {
                 alert(`${endpoint.slice(0, -1).toUpperCase()} created successfully!`);
-                // No se actualiza automáticamente la lista después de crear
             })
             .catch(error => {
                 alert(`Error: ${error.message}`);
                 console.error('There has been a problem with your POST operation:', error);
+            });
+        }
+
+        // Función para eliminar datos
+        function deleteData(endpoint, id) {
+            fetch(`/${endpoint}/${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                alert(`${endpoint.slice(0, -1).toUpperCase()} deleted successfully!`);
+                fetchData(endpoint); // Actualiza la lista después de eliminar
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+                console.error('There has been a problem with your DELETE operation:', error);
             });
         }
     </script>
