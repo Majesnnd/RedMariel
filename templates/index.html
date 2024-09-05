@@ -22,7 +22,7 @@
                     <input type="text" id="username" placeholder="User Name" required>
                     <button type="submit" class="btn">Create User</button>
                 </form>
-                <pre id="users-data" class="data-display"></pre> <!-- Cambié el id a "users-data" -->
+                <ul id="users-data" class="data-display"></ul> <!-- Cambié a <ul> para mostrar en lista -->
             </section>
 
             <!-- Sección para manejar posts -->
@@ -34,7 +34,7 @@
                     <textarea id="post-content" placeholder="Post Content" required></textarea>
                     <button type="submit" class="btn">Create Post</button>
                 </form>
-                <pre id="posts-data" class="data-display"></pre> <!-- Cambié el id a "posts-data" -->
+                <ul id="posts-data" class="data-display"></ul> <!-- Cambié a <ul> para mostrar en lista -->
             </section>
 
             <!-- Sección para manejar comentarios -->
@@ -46,7 +46,7 @@
                     <input type="number" id="comment-post-id" placeholder="Post ID" required>
                     <button type="submit" class="btn">Create Comment</button>
                 </form>
-                <pre id="comments-data" class="data-display"></pre> <!-- Cambié el id a "comments-data" -->
+                <ul id="comments-data" class="data-display"></ul> <!-- Cambié a <ul> para mostrar en lista -->
             </section>
         </main>
     </div>
@@ -63,12 +63,37 @@
                 })
                 .then(data => {
                     console.log(data);
-                    // Ajusta el ID del elemento HTML al que estás asignando el contenido
-                    document.getElementById(`${endpoint}-data`).textContent = JSON.stringify(data, null, 2);
+                    displayData(endpoint, data); // Mostrar datos de manera más estética
                 })
                 .catch(error => {
                     console.error('There has been a problem with your fetch operation:', error);
                 });
+        }
+
+        // Función para mostrar los datos de manera más estética
+        function displayData(endpoint, data) {
+            const dataList = document.getElementById(`${endpoint}-data`);
+            dataList.innerHTML = ''; // Limpia el contenido actual
+
+            if (endpoint === 'users') {
+                data.forEach(user => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `ID: ${user.id}, Name: ${user.name}`;
+                    dataList.appendChild(listItem);
+                });
+            } else if (endpoint === 'posts') {
+                data.forEach(post => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<strong>${post.title}</strong>: ${post.content}`;
+                    dataList.appendChild(listItem);
+                });
+            } else if (endpoint === 'comments') {
+                data.forEach(comment => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `Comment: "${comment.text}" on Post ID: ${comment.post_id}`;
+                    dataList.appendChild(listItem);
+                });
+            }
         }
 
         // Función para crear datos con solicitudes POST
@@ -103,7 +128,7 @@
             })
             .then(data => {
                 alert(`${endpoint.slice(0, -1).toUpperCase()} created successfully!`);
-                fetchData(endpoint); // Actualiza la lista después de crear
+                // No se actualiza automáticamente la lista después de crear
             })
             .catch(error => {
                 alert(`Error: ${error.message}`);
@@ -113,4 +138,3 @@
     </script>
 </body>
 </html>
-
