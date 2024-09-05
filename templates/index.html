@@ -21,7 +21,7 @@
 
     <script>
         function fetchData(endpoint) {
-            fetch(`/${endpoint}`)  // Construye la URL con el endpoint proporcionado
+            fetch(`/${endpoint}`)  
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
