@@ -3,21 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Interface</title>
+    <title>API Interfa2e</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>API Interface</h1>
-    <h2>Users</h2>
-    <button onclick="fetchData('users')">Fetch Users</button>
-    <pre id="user-data"></pre>
+    <div class="container">
+        <header class="header">
+            <h1>API Inte2121rface</h1>
+        </header>
 
-    <h2>Posts</h2>
-    <button onclick="fetchData('posts')">Fetch Posts</button>
-    <pre id="post-data"></pre>
+        <main>
+            <section class="section">
+                <h2>Users</h2>
+                <button class="btn" onclick="fetchData('users')">Fetch Users</button>
+                <pre id="user-data" class="data-display"></pre>
+            </section>
 
-    <h2>Comments</h2>
-    <button onclick="fetchData('comments')">Fetch Comments</button>
-    <pre id="comment-data"></pre>
+            <section class="section">
+                <h2>Posts</h2>
+                <button class="btn" onclick="fetchData('posts')">Fetch Posts</button>
+                <pre id="post-data" class="data-display"></pre>
+            </section>
+
+            <section class="section">
+                <h2>Comments</h2>
+                <button class="btn" onclick="fetchData('comments')">Fetch Comments</button>
+                <pre id="comment-data" class="data-display"></pre>
+            </section>
+        </main>
+    </div>
 
     <script>
         function fetchData(endpoint) {
@@ -38,4 +55,5 @@
     </script>
 </body>
 </html>
+
 
