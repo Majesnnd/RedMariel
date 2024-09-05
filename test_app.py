@@ -39,12 +39,14 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn(b'Test Post', response.data)
     
-
-    '''
     def test_create_post_without_title(self):
         response = self.app.post('/posts', json={'content': 'Post without title'})
         self.assertEqual(response.status_code, 400)
     '''
+    def test_create_post_without_title(self):
+        response = self.app.post('/posts', json={'content': 'Post without title'})
+        self.assertEqual(response.status_code, 400)
+    
 
     
     def test_create_comment_without_post_id(self):
@@ -64,3 +66,4 @@ class SimpleTestCase(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
+'''
