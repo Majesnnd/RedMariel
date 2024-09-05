@@ -3,7 +3,7 @@ name: PipelineProducción
 on:
   push:
     branches:
-      - master 
+      - Desarrollo 
   pull_request:
     branches:
       - master  
@@ -30,9 +30,5 @@ jobs:
     - name: Run tests with coverage
       run: |
         source mi_entorno/bin/activate
-<<<<<<< HEAD
-        pytest
-=======
-        pytest --cov=.
->>>>>>> master
+        pytest --cov=RedMariel
 

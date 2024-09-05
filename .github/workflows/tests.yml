@@ -27,9 +27,4 @@ jobs:
     - name: Run tests with coverage
       run: |
         source mi_entorno/bin/activate
-<<<<<<< HEAD
-        pytest
-        pytest
-=======
-        pytest --cov=Proyectobase
->>>>>>> master
+        pytest --cov=RedMariel
