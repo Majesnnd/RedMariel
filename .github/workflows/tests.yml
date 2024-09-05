@@ -27,4 +27,5 @@ jobs:
     - name: Run tests with coverage
       run: |
         source mi_entorno/bin/activate
-        pytest --cov=Proyectobase --cov-fail-under=40
+        pytest --cov=. --cov-fail-under=40
+
