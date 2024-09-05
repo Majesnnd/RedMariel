@@ -1,0 +1,13 @@
+[
+  "test_app.py::FlaskTestCase::test_get_comments",
+  "test_app.py::FlaskTestCase::test_get_posts",
+  "test_app.py::FlaskTestCase::test_get_users",
+  "test_app.py::FlaskTestCase::test_post_comment",
+  "test_app.py::FlaskTestCase::test_post_post",
+  "test_app.py::FlaskTestCase::test_post_user",
+  "test_app.py::SimpleTestCase::test_create_comment_without_post_id",
+  "test_app.py::SimpleTestCase::test_create_user",
+  "test_app.py::SimpleTestCase::test_get_users_after_creation",
+  "test_app.py::SimpleTestCase::test_get_users_empty",
+  "test_app.py::SimpleTestCase::test_user_exists_in_db"
+]

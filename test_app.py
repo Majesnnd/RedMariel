@@ -4,7 +4,7 @@ from app import app, db, User, Post, Comment
 class SimpleTestCase(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  # Usar base de datos en memoria para pruebas
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  
         self.app = app.test_client()
         with app.app_context():
             db.create_all()
@@ -33,8 +33,12 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json), 1)
         self.assertEqual(response.json[0]['name'], 'User 1')
-
-    # Test para crear un post sin título (debería fallar)´
+    
+    def test_create_post(self):
+        response = self.app.post('/posts', json={'title': 'Test Post', 'content': 'This is a test post content'})
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(b'Test Post', response.data)
+    
 
     '''
     def test_create_post_without_title(self):
@@ -42,14 +46,14 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
     '''
 
-    # Test para crear un comentario sin post_id (debería fallar)
+    
     def test_create_comment_without_post_id(self):
         response = self.app.post('/comments', json={'text': 'Comment without post_id'})
         self.assertEqual(response.status_code, 400)
         self.assertIn(b'Missing fields', response.data)
 
 
-    # Test para verificar que un usuario creado existe en la base de datos
+    
     def test_user_exists_in_db(self):
         self.app.post('/users', json={'name': 'Test User'})
         with app.app_context():

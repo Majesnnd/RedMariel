@@ -4,24 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>API Interface</h1>
-    <h2>Users</h2>
-    <button onclick="fetchData('users')">Fetch Users</button>
-    <pre id="user-data"></pre>
+    <div class="container">
+        <header class="header">
+            <h1>API Interface</h1>
+        </header>
 
-    <h2>Posts</h2>
-    <button onclick="fetchData('posts')">Fetch Posts</button>
-    <pre id="post-data"></pre>
+        <main>
+            <!-- Sección para manejar usuarios -->
+            <section class="section">
+                <h2>Users</h2>
+                <button class="btn" onclick="fetchData('users')">Fetch Users</button>
+                <form id="user-form" onsubmit="postData('users'); return false;">
+                    <input type="text" id="username" placeholder="User Name" required>
+                    <button type="submit" class="btn">Create User</button>
+                </form>
+                <ul id="users-data" class="data-display"></ul>
+            </section>
 
-    <h2>Comments</h2>
-    <button onclick="fetchData('comments')">Fetch Comments</button>
-    <pre id="comment-data"></pre>
+            <!-- Sección para manejar posts -->
+            <section class="section">
+                <h2>Posts</h2>
+                <button class="btn" onclick="fetchData('posts')">Fetch Posts</button>
+                <form id="post-form" onsubmit="postData('posts'); return false;">
+                    <input type="text" id="post-title" placeholder="Post Title" required>
+                    <textarea id="post-content" placeholder="Post Content" required></textarea>
+                    <button type="submit" class="btn">Create Post</button>
+                </form>
+                <ul id="posts-data" class="data-display"></ul>
+            </section>
+
+            <!-- Sección para manejar comentarios -->
+            <section class="section">
+                <h2>Comments</h2>
+                <button class="btn" onclick="fetchData('comments')">Fetch Comments</button>
+                <form id="comment-form" onsubmit="postData('comments'); return false;">
+                    <textarea id="comment-text" placeholder="Comment Text" required></textarea>
+                    <input type="number" id="comment-post-id" placeholder="Post ID" required>
+                    <button type="submit" class="btn">Create Comment</button>
+                </form>
+                <ul id="comments-data" class="data-display"></ul>
+            </section>
+        </main>
+    </div>
 
     <script>
         function fetchData(endpoint) {
-            fetch(`/${endpoint}`)  // Construye la URL con el endpoint proporcionado
+            fetch(`/${endpoint}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -29,13 +61,93 @@
                     return response.json();
                 })
                 .then(data => {
-                    document.getElementById(`${endpoint}-data`).textContent = JSON.stringify(data, null, 2);
+                    displayData(endpoint, data);
                 })
                 .catch(error => {
                     console.error('There has been a problem with your fetch operation:', error);
                 });
         }
+
+        function displayData(endpoint, data) {
+            const dataList = document.getElementById(`${endpoint}-data`);
+            dataList.innerHTML = '';
+
+            if (endpoint === 'users') {
+                data.forEach(user => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `ID: ${user.id}, Name: ${user.name} <button onclick="deleteData('users', ${user.id})">Delete</button>`;
+                    dataList.appendChild(listItem);
+                });
+            } else if (endpoint === 'posts') {
+                data.forEach(post => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<strong>${post.title}</strong>: ${post.content} <button onclick="deleteData('posts', ${post.id})">Delete</button>`;
+                    dataList.appendChild(listItem);
+                });
+            } else if (endpoint === 'comments') {
+                data.forEach(comment => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `Comment: "${comment.text}" on Post ID: ${comment.post_id} <button onclick="deleteData('comments', ${comment.id})">Delete</button>`;
+                    dataList.appendChild(listItem);
+                });
+            }
+        }
+
+        function postData(endpoint) {
+            let data = {};
+            if (endpoint === 'users') {
+                data = { name: document.getElementById('username').value };
+            } else if (endpoint === 'posts') {
+                data = {
+                    title: document.getElementById('post-title').value,
+                    content: document.getElementById('post-content').value
+                };
+            } else if (endpoint === 'comments') {
+                data = {
+                    text: document.getElementById('comment-text').value,
+                    post_id: parseInt(document.getElementById('comment-post-id').value)
+                };
+            }
+
+            fetch(`/${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => { throw new Error(errData.error || 'Network response was not ok'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(`${endpoint.slice(0, -1).toUpperCase()} created successfully!`);
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+                console.error('There has been a problem with your POST operation:', error);
+            });
+        }
+
+        // Función para eliminar datos
+        function deleteData(endpoint, id) {
+            fetch(`/${endpoint}/${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                alert(`${endpoint.slice(0, -1).toUpperCase()} deleted successfully!`);
+                fetchData(endpoint); // Actualiza la lista después de eliminar
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+                console.error('There has been a problem with your DELETE operation:', error);
+            });
+        }
     </script>
 </body>
 </html>
-
