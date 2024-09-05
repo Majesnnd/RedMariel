@@ -1,0 +1,8 @@
+{
+  "test_app.py::FlaskTestCase::test_get_comments": true,
+  "test_app.py::FlaskTestCase::test_get_posts": true,
+  "test_app.py::FlaskTestCase::test_get_users": true,
+  "test_app.py::FlaskTestCase::test_post_comment": true,
+  "test_app.py::FlaskTestCase::test_post_post": true,
+  "test_app.py::FlaskTestCase::test_post_user": true
+}
