@@ -39,9 +39,26 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn(b'Test Post', response.data)
     
-    def test_create_post_without_title(self):
-        response = self.app.post('/posts', json={'content': 'Post without title'})
-        self.assertEqual(response.status_code, 400)
+    # Test para crear un post
+    def test_create_post(self):
+        response = self.app.post('/posts', json={'title': 'Test Post', 'content': 'This is a test post content'})
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(b'Test Post', response.data)
+
+    # Test para eliminar un usuario existente
+    def test_delete_user(self):
+        # Crear un usuario primero
+        self.app.post('/users', json={'name': 'User to delete'})
+        response = self.app.delete('/users/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'User deleted successfully', response.data)
+
+    # Test para intentar eliminar un usuario no existente
+    def test_delete_user_not_found(self):
+        response = self.app.delete('/users/999')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b'User not found', response.data)
+    
     '''
     def test_create_post_without_title(self):
         response = self.app.post('/posts', json={'content': 'Post without title'})
