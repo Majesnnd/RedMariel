@@ -8,7 +8,7 @@ class SimpleTestCase(unittest.TestCase):
         self.app = app.test_client()
         with app.app_context():
             db.create_all()
-
+    '''
     def tearDown(self):
         with app.app_context():
             db.session.remove()
@@ -20,7 +20,7 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn(b'Test User', response.data)
 
-    '''
+    
     def test_get_users_empty(self):
         response = self.app.get('/users')
         self.assertEqual(response.status_code, 200)
