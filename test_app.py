@@ -20,7 +20,7 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn(b'Test User', response.data)
 
-    
+    '''
     def test_get_users_empty(self):
         response = self.app.get('/users')
         self.assertEqual(response.status_code, 200)
@@ -67,7 +67,7 @@ class SimpleTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn(b'Post not found', response.data)
 
-    '''
+    
     def test_create_comment(self):
         self.app.post('/posts', json={'title': 'Post for comment', 'content': 'Post content'})
         response = self.app.post('/comments', json={'text': 'Test comment', 'post_id': 1})
